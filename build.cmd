@@ -22,7 +22,7 @@ copy "%CACHED_NUGET%" .nuget\nuget.exe > nul
 .nuget\NuGet.exe restore
 
 :build
-"C:\Program Files (x86)\MSBuild\14.0\Bin\MsBuild.exe" uFastly.sln /p:configuration=release /p:VisualStudioVersion=14.0
+"C:\Program Files (x86)\MSBuild\14.0\Bin\MsBuild.exe" FastlyNet.sln /p:configuration=release /p:VisualStudioVersion=14.0
 
 :package
 IF NOT EXIST "pkg" md "pkg"
