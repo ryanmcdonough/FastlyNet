@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,14 +11,17 @@ namespace FastlyNet
 {
     public class Fastly
     {
+        private static HttpClient _client;
+        private const string EndPoint = "https://api.fastly.com";
+
         public Fastly(string fastlyApiKey)
         {
-            _fastlyApiKey = fastlyApiKey;
+            _client = new HttpClient { BaseAddress = new Uri(EndPoint) };
+
+            _client.DefaultRequestHeaders.Accept.Clear();
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _client.DefaultRequestHeaders.Add("Fastly-Key", fastlyApiKey);
         }
-
-        private readonly string _fastlyApiKey;
-
-        private const string EndPoint = "https://api.fastly.com";
 
         public Task Purge(string uri)
         {
@@ -49,14 +53,9 @@ namespace FastlyNet
             {
                 Method = new HttpMethod(method),
                 RequestUri = requestUri
-            };
+            };            
 
-            request.Headers.Add("Accept", "application/json");
-            request.Headers.Add("Fastly-Key", _fastlyApiKey);
-
-            var client = new HttpClient();
-
-            var response = client.SendAsync(request);
+            var response = _client.SendAsync(request);
 
             return response;
         }
